@@ -4,7 +4,53 @@
 {% block navbar %}
 
 
-<div class="navbar navbar-inverse" role="navigation"> 
+<script type=text/javascript src="{{
+  url_for('static', filename='jquery.js') }}">
+</script>
+<script type=text/javascript>
+  $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
+
+  $(function() {
+    $('#validate').bind('click', function() {
+       var $word = "hello";
+        var $meaning =  "wocao";
+      $.getJSON($SCRIPT_ROOT + '/test', {
+         word : $word,
+        meaning : $meaning 
+      }, function(data) {
+        $('#status1').text(data.result);
+      });
+      return false;
+    });
+
+
+      
+    $('#list_more_words').bind('click', function() {
+        var $begin = parseInt($('#begin_index').text());
+        var $end =  parseInt($('#end_index').text());
+        if($end-$begin<8)
+            $begin = $end - 1;       
+        else
+            $begin = $begin + 7;          
+      $.getJSON($SCRIPT_ROOT + '/playmore', {
+        begin : $begin,
+      }, function(data) {
+        $("#begin_index").text(data.begin);
+        $("#end_index").text(data.end);
+        setTimeout('window.location.replace("http://120.27.129.119:5000/play")', 100)
+      });
+        
+
+      return false;
+    });
+  });
+  /*
+  
+    
+  })*/
+</script>
+<!--navbar-fixed-top-->
+<div class="navbar navbar-inverse " role="navigation"> 
   <div class="container">
     <div class="navbar-header">
       <button type="button" class="navbar-toggle" 
@@ -14,11 +60,21 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="/">赵原制作</a> 
+      <a class="navbar-brand" href="/">赵原 制作</a> 
     </div>
     <div class="navbar-collapse collapse"> 
       <ul class="nav navbar-nav">
-        <li><a href="/">Home</a></li> 
+        <li><a href="#">背单词吧</a></li>
+	<li class="dropdown">
+		<a href='#' class="dropdown-toggle" data-toggle="dropdown">
+		统计
+		<b class="caret"></b>
+		</a>
+		<ul class="dropdown-menu">
+			<li><a href="#">date</a></li>
+			<li><a href="#">mistake</a></li>
+		</ul>
+	</li> 
       </ul>
     </div>
   </div>
@@ -30,7 +86,7 @@
 
 <div class="container">
   <div class="page-header">
-    <h1>Hello,你个陆豚!</h1>
+    <h1>Hello,你个陆豚</h1>
   </div>
 </div>
 <div class="container">
@@ -45,29 +101,30 @@
 </div>
 <!--{{ wtf.quick_form(form) }}-->
 <div class="container">
-  <p>哟哟切克闹</p> 
-  
+  <!--<p>哟哟</p>--> 
   <div class="table-responsive"> 
-    <table class="table table-striped table-bordered">
+    <table class="table table-striped table-bordered table-hover table-condensed">
       <thead>
         <tr>
-          <th>#</th>
           <th>words</th>
           <th>meaning</th>
-	  <th> <th>
+          <th>status</th>
         </tr>
       </thead>
       <tbody>
-	{% for words in WORDS.wordsarray %}
+	     {% for n in range(end-begin) %}
           <tr>
-              <td>{{n}}</td>
-              <td>{{words[0]}}</td>
-              <td><input type="text" value="{{words[1]}}"class="form-control"></td>
-	      <td><button type="button" class="btn btn-primary">验证</button></td>
+              <td id="words{{n}}">{{WORDS.wordsarray[begin+n][0]}}</td>
+              <td style="width: 40%"><input type="text" name="meaning{{n}}"value="{{WORDS.wordsarray[begin+n][1]}}" class="form-control" ></td>
+		          <td id="status{{n}}">?</td>
           </tr>
         {% endfor %}
       </tbody>
     </table>
+	<tr> <button type="button" class="btn btn-primary" id="validate">验证</button>
+        <button type="button"  class="btn btn-primary" id="list_more_words">再来几个！</button></tr>
+  <tr><span id = 'begin_index' style="display:none">{{begin}}</span></tr>
+  <tr><span id = 'end_index' style="display:none">{{end}}</span></tr>
   </div>
 
 </div>
