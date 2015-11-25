@@ -83,6 +83,8 @@ class words(object):
 			if index>-1:
 				inputmeaning = inputmeaning[0:index]+ inputmeaning[index+1:]
 		#If not doing as below it will occur an encode error
+		if inputmeaning == None:
+			inputmeaning = ""
 		meaning = meaning.decode('utf-8','ignore').encode('utf-8')
 		inputmeaning = inputmeaning.decode('utf-8','ignore').encode('utf-8')
 		#print inputmeaning, meaning

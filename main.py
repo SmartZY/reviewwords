@@ -66,7 +66,6 @@ def palymore():
 		if handle.begin == len(WORDS.wordsarray) - 1:
 			handle.begin = 0
 		handle.end = handle.begin + 8
-	print handle.begin,handle.end
 	return jsonify(begin=handle.begin,end=handle.end)
 
 
@@ -74,11 +73,35 @@ def palymore():
 
 @app.route('/test',methods=['get','post'])
 def testFuck():
-	word = request.args.get('word', 0, type=str)
-	meaning = request.args.get('meaning', 0, type=str)
-	return jsonify(result=word + meaning)
+	word = request.args.get('word', '', type=str).split('-')
+	meaning = request.args.get('meaning', 0, type=str).split('-')
+	validateresult = []
+	for i in range(len(word)):
+		validateresult.append(WORDS.match_words(word[i],meaning[i]))
+	#print 	validateresult
+	return jsonify(result=validateresult)
 
+'''根据返回的words查找它的正确含义并返回'''
+@app.route('/playhint',methods=['get','post'])
+def get_hint():
+	word = request.args.get('word', "", type=str)
+	if word != "":
+		for item in WORDS.wordsarray:
+			if word == item[0]:
+				return jsonify(hint=item[1])
+	return jsonify(hint="") 
 
+@app.route('/enterwords',methods=['get','post'])
+def enter_words():
+
+	word = request.args.get('word', "", type=str)
+	meaning = request.args.get('meaning', "", type=str)	
+	data = []
+	data.append(word)
+	data.append(meaning)
+	if word != "":
+		WORDS.entering_words(data)
+	return render_template('enterwords.html')
 
 
 if __name__ == '__main__':

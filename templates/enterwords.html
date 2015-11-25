@@ -7,7 +7,6 @@
 <!--
 <script src="http://apps.bdimg.com/libs/jquery/2.1.1/jquery.min.js"></script>
 <script src="http://apps.bdimg.com/libs/bootstrap/3.3.0/js/bootstrap.min.js"></script>
--->
 <script type=text/javascript src="{{
   url_for('static', filename='jquery.js') }}">
 </script>
@@ -101,6 +100,30 @@
     
   })*/
 </script>
+
+-->
+<script type=text/javascript>
+$SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
+function enter_words()
+{
+    $word = $.trim($("#word").val())
+    $meaning = $.trim($("#meaning").val())
+    if($word == '')
+    {
+        alert("words不能为空")
+        return false;      
+    }
+    else
+    {
+       $.getJSON($SCRIPT_ROOT + '/enterwords', {
+        word : $word,
+        meaning : $meaning,
+      }, function(data) {
+      }); 
+    }
+    setTimeout('alert("导入成功")', 100)
+}
+</script>
 <!--navbar-fixed-top-->
 <div class="navbar navbar-inverse " role="navigation"> 
   <div class="container">
@@ -116,18 +139,8 @@
     </div>
     <div class="navbar-collapse collapse"> 
       <ul class="nav navbar-nav">
-         <li class="active"><a href="#">背背单词！！</a></li>
-         <li class="dropdown">
-            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-               换一批单词 
-               <b class="caret"></b>
-            </a>
-            <ul class="dropdown-menu">
-               <li><a href="#">按日期</a></li>
-               <li><a href="#">只做出过错的</a></li>
-            </ul>
-         </li>
-         <li><a href="/enterwords">录入单词</a></li>
+         <li ><a href="/play">背背单词！！</a></li>
+         <li class="active"><a href="/enterwords">录入单词</a></li>
           <li><a href="#">统计</a></li>
       </ul>
     </div>
@@ -153,7 +166,6 @@
 
   {% block page_content %}{% endblock %}
 </div>
-<!--{{ wtf.quick_form(form) }}-->
 <div class="container">
   <!--<p>哟哟</p>--> 
   <div class="table-responsive"> 
@@ -162,24 +174,20 @@
         <tr>
           <th>words</th>
           <th>meaning</th>
-          <th>status</th>
         </tr>
       </thead>
       <tbody>
-	     {% for n in range(end-begin) %}
+
           <tr>
-              <td style="width: 35%" id="words{{n}}">{{WORDS.wordsarray[begin+n][0]}}</td>
-              <td style="width: 35%"><input type="text" name="meaning{{n}}" id = "meaning{{n}}"value="{{WORDS.wordsarray[begin+n][1]}}" class="form-control" ></td>
-		          <td style="width: 30%" id="status{{n}}">?</td>
+              <td style="width: 50%" ><input type="text" id="word" class="form-control" ></td>
+              <td style="width: 50%"><input type="text"  id="meaning" class="form-control" ></td>
           </tr>
-        {% endfor %}
       </tbody>
     </table>
-	<tr> <button type="button" class="btn btn-primary" id="validate">验证</button>
-        <button type="button"  class="btn btn-primary" id="list_more_words">再来几个！</button></tr>
-  <tr><span id = 'begin_index' style="display:none">{{begin}}</span></tr>
+	<tr> <button type="button" class="btn btn-primary" id="validate" onclick="enter_words()">录入</button></tr>
+  <!--<tr><span id = 'begin_index' style="display:none">{{begin}}</span></tr>
   <tr><span id = 'end_index' style="display:none">{{end}}</span></tr>
-  <tr><span id = 'allstatus' style="display:none">{{status}}</span></tr>
+  <tr><span id = 'allstatus' style="display:none">{{status}}</span></tr>-->
   </div>
 
 </div>
