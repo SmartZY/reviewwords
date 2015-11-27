@@ -1,5 +1,4 @@
 {% extends "bootstrap/base.html" %}
-{% import "bootstrap/wtf.html" as wtf%}
 {% block title %}Learn English!{% endblock %}
 {% block navbar %}
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -39,8 +38,8 @@
         {
           $wordsid = "words"+i
           $meaningid = "meaning"+i
-          $word = $("#" + $wordsid).text()+"-" +  $word
-          $meaning = $("#" + $meaningid).val() + "-" + $meaning 
+          $word = $("#" + $wordsid).text()+"=" +  $word
+          $meaning = $("#" + $meaningid).val() + "=" + $meaning 
         }
 
       
@@ -54,9 +53,11 @@
         {
             if($result[j] == true)
             {
-              //$("#status"+($result.length - 2 - j).toString()).text("正确")
-              $("#status"+($result.length - 2 - j).toString()).html('<span class="glyphicon glyphicon-ok"  style="color:green">正确</span>')
+              //$("#status"+($result.length - 2 - j).toString()).html('<span class="glyphicon glyphicon-ok"  style="color:green">正确</span>')
 
+              $("#status"+($result.length - 2 - j).toString()).html('<button type="button" class="btn btn-success" onclick="forhint('
+                +($result.length - 2 - j).toString()+
+                ')"><span class="glyphicon glyphicon-ok">正确</span></button>')
             }
             else
             {
@@ -116,7 +117,7 @@
     </div>
     <div class="navbar-collapse collapse"> 
       <ul class="nav navbar-nav">
-         <li class="active"><a href="#">背背单词！！</a></li>
+         <li class="active"><a href="/playforall">背背单词！！</a></li>
          <li class="dropdown">
             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                换一批单词 
@@ -124,7 +125,7 @@
             </a>
             <ul class="dropdown-menu">
                <li><a href="#">按日期</a></li>
-               <li><a href="#">只做出过错的</a></li>
+               <li><a href="/playfrommistake">只做出过错的</a></li>
             </ul>
          </li>
          <li><a href="/enterwords">录入单词</a></li>
@@ -153,7 +154,6 @@
 
   {% block page_content %}{% endblock %}
 </div>
-<!--{{ wtf.quick_form(form) }}-->
 <div class="container">
   <!--<p>哟哟</p>--> 
   <div class="table-responsive"> 
@@ -169,7 +169,7 @@
 	     {% for n in range(end-begin) %}
           <tr>
               <td style="width: 35%" id="words{{n}}">{{WORDS.wordsarray[begin+n][0]}}</td>
-              <td style="width: 35%"><input type="text" name="meaning{{n}}" id = "meaning{{n}}"value="{{WORDS.wordsarray[begin+n][1]}}" class="form-control" ></td>
+              <td style="width: 35%"><input type="text" name="meaning{{n}}" id = "meaning{{n}}" class="form-control" ></td><!--value="{{WORDS.wordsarray[begin+n][1]}}"-->
 		          <td style="width: 30%" id="status{{n}}">?</td>
           </tr>
         {% endfor %}

@@ -16,6 +16,8 @@ class words(object):
                 self.database = db.db()
                 self.database.connectdb()
 		self.wordsarray=[]
+		self.mistakewordsarray=[]
+		self.datewordsarray=[]
         def get_words_from_db(self,sql):
 		cur = self.database.executesql(sql)
 		if cur:
@@ -41,9 +43,11 @@ class words(object):
 				data_to_insert.append(0)	
 				data_to_insert.append(0)
 				self.wordsarray.append(data_to_insert)
+
+				print data_to_insert[0],data_to_insert[1]
 				#insert data to db
 				sql = "insert into word values('%s','%s','%s','%s','%s')" \
-				 %(data_to_insert[0],data_to_insert[1].encode('utf-8'),data_to_insert[2],data_to_insert[3],data_to_insert[4])
+				 %(data_to_insert[0].encode('utf-8'),data_to_insert[1].encode('utf-8'),data_to_insert[2],data_to_insert[3],data_to_insert[4])
 				self.database.executesql(sql)
         def match_words(self,word,meaning):
 		if self.wordsarray :
@@ -80,18 +84,23 @@ class words(object):
 		#inputmeaning is the meaning from user so called input. Meaning is in the mysql 
 		for item in func_words:
 			index = inputmeaning.find(item)
-			if index>-1:
+			while index>-1:
 				inputmeaning = inputmeaning[0:index]+ inputmeaning[index+1:]
+				index = inputmeaning.find(item)
 		#If not doing as below it will occur an encode error
 		if inputmeaning == None:
 			inputmeaning = ""
 		meaning = meaning.decode('utf-8','ignore').encode('utf-8')
 		inputmeaning = inputmeaning.decode('utf-8','ignore').encode('utf-8')
 		#print inputmeaning, meaning
+		if inputmeaning.rstrip() == "":
+			return False
 		if meaning.find(inputmeaning)>-1:
 			#stupid match version 1.1
 			return True
 		else:
+			print inputmeaning
+			print meaning
 			return False
 			
 							
