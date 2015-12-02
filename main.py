@@ -7,6 +7,7 @@ from werkzeug import secure_filename
 import xlrd
 import sys
 import os
+import random
 reload(sys)
 sys.setdefaultencoding('utf-8')
 UPLOAD_FOLDER = 'uploadfile/enterwords'
@@ -18,6 +19,8 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 WORDS = words()
 WORDS.get_words_from_db('select * from word')
+for i in range(5):
+	random.shuffle(WORDS.wordsarray)
 
 class Handle(object):
 	def __init__(self):
@@ -39,6 +42,10 @@ def dealwithcursor():
 		if handle.begin == len(WORDS.wordsarray) - 1:
 			handle.begin = 0
 		handle.end = handle.begin + 8
+	if handle.begin < len(WORDS.wordsarray) - 1:
+		handle.begin = handle.begin + 1
+	if handle.end < len(WORDS.wordsarray):
+		handle.end = handle.end + 1
 	
 @app.route('/play',methods=['get','post'])
 def play():
@@ -130,6 +137,7 @@ def get_words_from_mistake():
 	sql = "select * from word where mistake_count > 0"
 	WORDS.wordsarray = []
 	WORDS.get_words_from_db(sql)
+	random.shuffle(WORDS.wordsarray)
 	handle.begin = 0
 	handle.end = 0
 	dealwithcursor()
@@ -143,6 +151,7 @@ def get_words_for_all():
 	sql = "select * from word"
 	WORDS.wordsarray = []
 	WORDS.get_words_from_db(sql)
+	random.shuffle(WORDS.wordsarray)
 	handle.begin = 0
 	handle.end = 0
 	dealwithcursor()
