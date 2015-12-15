@@ -120,8 +120,9 @@ def upload_file():
         file = request.files['file']
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
-            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            data =  xlrd.open_workbook(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            file.save('/root/zhaoyuan/reviewwords/uploadfile/enterwords/'+filename)
+            #file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            data =  xlrd.open_workbook('/root/zhaoyuan/reviewwords/uploadfile/enterwords/'+filename)
             table = data.sheets()[0]
             nrows = table.nrows
             for i in range(nrows):
